@@ -50,7 +50,7 @@ class ClassComponentBuilder<SharedObjectType : Any>(
     }
 
     val constructor = constructor
-                      ?: SyncFunctionComponent("constructor", emptyArray(), toReturnType<Unit>()) {}
+      ?: SyncFunctionComponent("constructor", emptyArray(), toReturnType<Unit>()) {}
     constructor.canTakeOwner = true
     constructor.ownerType = ownerType.kType
 
