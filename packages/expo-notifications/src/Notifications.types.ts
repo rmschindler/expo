@@ -268,11 +268,23 @@ export type CalendarTriggerInputValue = {
 };
 
 /**
+ * Calendar trigger inputs must have the "type" property set to one of these values
+ */
+export enum CalendarTriggerTypes {
+  CALENDAR = 'calendar',
+  DAILY = 'daily',
+  WEEKLY = 'weekly',
+  YEARLY = 'yearly',
+  DATE = 'date',
+  TIME_INTERVAL = 'timeInterval',
+}
+/**
  * A trigger that will cause the notification to be delivered once or many times when the date components match the specified values.
  * Corresponds to native [`UNCalendarNotificationTrigger`](https://developer.apple.com/documentation/usernotifications/uncalendarnotificationtrigger?language=objc).
  * @platform ios
  */
 export type CalendarTriggerInput = CalendarTriggerInputValue & {
+  type: CalendarTriggerTypes.CALENDAR;
   channelId?: string;
   repeats?: boolean;
 };
@@ -282,6 +294,7 @@ export type CalendarTriggerInput = CalendarTriggerInputValue & {
  * > **On iOS**, when `repeats` is `true`, the time interval must be 60 seconds or greater. Otherwise, the notification won't be triggered.
  */
 export interface TimeIntervalTriggerInput {
+  type: CalendarTriggerTypes.TIME_INTERVAL;
   channelId?: string;
   repeats?: boolean;
   seconds: number;
@@ -291,10 +304,10 @@ export interface TimeIntervalTriggerInput {
  * A trigger that will cause the notification to be delivered once per day.
  */
 export interface DailyTriggerInput {
+  type: CalendarTriggerTypes.DAILY;
   channelId?: string;
   hour: number;
   minute: number;
-  repeats: true;
 }
 
 /**
@@ -302,11 +315,11 @@ export interface DailyTriggerInput {
  * > **Note:** Weekdays are specified with a number from `1` through `7`, with `1` indicating Sunday.
  */
 export interface WeeklyTriggerInput {
+  type: CalendarTriggerTypes.WEEKLY;
   channelId?: string;
   weekday: number;
   hour: number;
   minute: number;
-  repeats: true;
 }
 
 /**
@@ -314,19 +327,22 @@ export interface WeeklyTriggerInput {
  * > **Note:** all properties are specified in JavaScript Date's ranges.
  */
 export interface YearlyTriggerInput {
+  type: CalendarTriggerTypes.YEARLY;
   channelId?: string;
   day: number;
   month: number;
   hour: number;
   minute: number;
-  repeats: true;
 }
 
 /**
  * A trigger that will cause the notification to be delivered once at the specified `Date`.
  * If you pass in a `number` it will be interpreted as a Unix timestamp.
  */
-export type DateTriggerInput = Date | number | { channelId?: string; date: Date | number };
+export type DateTriggerInput =
+  | Date
+  | number
+  | { type: CalendarTriggerTypes.DATE; channelId?: string; date: Date | number };
 
 /**
  * A type represents time-based, schedulable triggers. For these triggers you can check the next trigger date

@@ -13,6 +13,7 @@ import {
   DateTriggerInput,
   ChannelAwareTriggerInput,
   SchedulableNotificationTriggerInput,
+  CalendarTriggerTypes,
 } from './Notifications.types';
 
 /**
@@ -144,11 +145,7 @@ export function parseTrigger(
       hour: userFacingTrigger.hour,
       minute: userFacingTrigger.minute,
     };
-  } else if (isSecondsPropertyMisusedInCalendarTriggerInput(userFacingTrigger)) {
-    throw new TypeError(
-      'Could not have inferred the notification trigger type: if you want to use a time interval trigger, pass in only `seconds` with or without `repeats` property; if you want to use calendar-based trigger, pass in `second`.'
-    );
-  } else if ('seconds' in userFacingTrigger) {
+  } else if (isTimeIntervalTriggerInput(userFacingTrigger)) {
     return {
       type: 'timeInterval',
       channelId: userFacingTrigger.channelId,
@@ -170,21 +167,17 @@ function isCalendarTrigger(
   trigger: CalendarTriggerInput | ChannelAwareTriggerInput
 ): trigger is CalendarTriggerInput {
   const { channelId, ...triggerWithoutChannelId } = trigger;
-  return Object.keys(triggerWithoutChannelId).length > 0;
+  return (
+    'type' in triggerWithoutChannelId &&
+    triggerWithoutChannelId.type === CalendarTriggerTypes.CALENDAR
+  );
 }
 
-function isDateTrigger(
-  trigger:
-    | DateTriggerInput
-    | WeeklyTriggerInput
-    | DailyTriggerInput
-    | CalendarTriggerInput
-    | TimeIntervalTriggerInput
-): trigger is DateTriggerInput {
+function isDateTrigger(trigger: NotificationTriggerInput): trigger is DateTriggerInput {
   return (
     trigger instanceof Date ||
     typeof trigger === 'number' ||
-    (typeof trigger === 'object' && 'date' in trigger)
+    (typeof trigger === 'object' && trigger !== null && CalendarTriggerTypes.DATE in trigger)
   );
 }
 
@@ -202,9 +195,7 @@ function toTimestamp(date: number | Date) {
   return date;
 }
 
-function isDailyTriggerInput(
-  trigger: SchedulableNotificationTriggerInput
-): trigger is DailyTriggerInput {
+function isDailyTriggerInput(trigger: NotificationTriggerInput): trigger is DailyTriggerInput {
   if (typeof trigger !== 'object') return false;
   const { channelId, ...triggerWithoutChannelId } = trigger as DailyTriggerInput;
   return (
@@ -213,14 +204,12 @@ function isDailyTriggerInput(
     DAILY_TRIGGER_EXPECTED_DATE_COMPONENTS.every(
       (component) => component in triggerWithoutChannelId
     ) &&
-    'repeats' in triggerWithoutChannelId &&
-    triggerWithoutChannelId.repeats === true
+    'type' in triggerWithoutChannelId &&
+    triggerWithoutChannelId.type === CalendarTriggerTypes.DAILY
   );
 }
 
-function isWeeklyTriggerInput(
-  trigger: SchedulableNotificationTriggerInput
-): trigger is WeeklyTriggerInput {
+function isWeeklyTriggerInput(trigger: NotificationTriggerInput): trigger is WeeklyTriggerInput {
   if (typeof trigger !== 'object') return false;
   const { channelId, ...triggerWithoutChannelId } = trigger as WeeklyTriggerInput;
   return (
@@ -229,14 +218,12 @@ function isWeeklyTriggerInput(
     WEEKLY_TRIGGER_EXPECTED_DATE_COMPONENTS.every(
       (component) => component in triggerWithoutChannelId
     ) &&
-    'repeats' in triggerWithoutChannelId &&
-    triggerWithoutChannelId.repeats === true
+    'type' in triggerWithoutChannelId &&
+    triggerWithoutChannelId.type === CalendarTriggerTypes.WEEKLY
   );
 }
 
-function isYearlyTriggerInput(
-  trigger: SchedulableNotificationTriggerInput
-): trigger is YearlyTriggerInput {
+function isYearlyTriggerInput(trigger: NotificationTriggerInput): trigger is YearlyTriggerInput {
   if (typeof trigger !== 'object') return false;
   const { channelId, ...triggerWithoutChannelId } = trigger as YearlyTriggerInput;
   return (
@@ -245,24 +232,20 @@ function isYearlyTriggerInput(
     YEARLY_TRIGGER_EXPECTED_DATE_COMPONENTS.every(
       (component) => component in triggerWithoutChannelId
     ) &&
-    'repeats' in triggerWithoutChannelId &&
-    triggerWithoutChannelId.repeats === true
+    'type' in triggerWithoutChannelId &&
+    triggerWithoutChannelId.type === CalendarTriggerTypes.YEARLY
   );
 }
 
-function isSecondsPropertyMisusedInCalendarTriggerInput(
-  trigger: TimeIntervalTriggerInput | CalendarTriggerInput
-) {
-  const { channelId, ...triggerWithoutChannelId } = trigger;
+function isTimeIntervalTriggerInput(
+  trigger: NotificationTriggerInput
+): trigger is TimeIntervalTriggerInput {
+  if (typeof trigger !== 'object') return false;
+  const { channelId, ...triggerWithoutChannelId } = trigger as TimeIntervalTriggerInput;
   return (
-    // eg. { seconds: ..., repeats: ..., hour: ... }
-    ('seconds' in triggerWithoutChannelId &&
-      'repeats' in triggerWithoutChannelId &&
-      Object.keys(triggerWithoutChannelId).length > 2) ||
-    // eg. { seconds: ..., hour: ... }
-    ('seconds' in triggerWithoutChannelId &&
-      !('repeats' in triggerWithoutChannelId) &&
-      Object.keys(triggerWithoutChannelId).length > 1)
+    'type' in triggerWithoutChannelId &&
+    triggerWithoutChannelId.type === CalendarTriggerTypes.TIME_INTERVAL &&
+    'seconds' in triggerWithoutChannelId
   );
 }
 

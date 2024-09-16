@@ -1,3 +1,4 @@
+import { CalendarTriggerTypes, NotificationTriggerInput } from '../Notifications.types';
 import NotificationScheduler from '../NotificationScheduler';
 import scheduleNotificationAsync from '../scheduleNotificationAsync';
 
@@ -41,141 +42,129 @@ it(`verifies date (as time) trigger handling`, async () => {
 });
 
 it(`verifies daily trigger handling`, async () => {
-  const trigger = {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.DAILY,
     hour: 12,
     minute: 30,
-    repeats: true as boolean | undefined,
   };
   const input = {
     ...notificationTriggerInputTest,
     trigger,
   };
   await scheduleNotificationAsync(input);
-  delete trigger.repeats;
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'daily',
       ...input.trigger,
     }
   );
 });
 
 it(`verifies weekly trigger handling`, async () => {
-  const trigger = {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.WEEKLY,
     weekday: 1,
     hour: 12,
     minute: 30,
-    repeats: true as boolean | undefined,
   };
   const input = {
     ...notificationTriggerInputTest,
     trigger,
   };
   await scheduleNotificationAsync(input);
-  delete trigger.repeats;
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'weekly',
       ...input.trigger,
     }
   );
 });
 
 it(`verifies yearly trigger handling`, async () => {
-  const trigger = {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.YEARLY,
     day: 1,
     month: 6,
     hour: 12,
     minute: 30,
-    repeats: true as boolean | undefined,
   };
   const input = {
     ...notificationTriggerInputTest,
     trigger,
   };
   await scheduleNotificationAsync(input);
-  delete trigger.repeats;
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'yearly',
       ...input.trigger,
     }
   );
 });
 
 it(`verifies daily trigger handling with channelId`, async () => {
-  const trigger = {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.DAILY,
     hour: 12,
     minute: 30,
     channelId: 'test-channel-id',
-    repeats: true as boolean | undefined,
   };
   const input = {
     ...notificationTriggerInputTest,
     trigger,
   };
   await scheduleNotificationAsync(input);
-  delete trigger.repeats;
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'daily',
       ...input.trigger,
     }
   );
 });
 
 it(`verifies weekly trigger handling with channelId`, async () => {
-  const trigger = {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.WEEKLY,
     weekday: 1,
     hour: 12,
     minute: 30,
     channelId: 'test-channel-id',
-    repeats: true as boolean | undefined,
   };
   const input = {
     ...notificationTriggerInputTest,
     trigger,
   };
   await scheduleNotificationAsync(input);
-  delete trigger.repeats;
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'weekly',
       ...input.trigger,
     }
   );
 });
 
 it(`verifies yearly trigger handling with channelId`, async () => {
-  const trigger = {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.YEARLY,
     day: 1,
     month: 6,
     hour: 12,
     minute: 30,
     channelId: 'test-channel-id',
-    repeats: true as boolean | undefined,
   };
   const input = {
     ...notificationTriggerInputTest,
     trigger,
   };
   await scheduleNotificationAsync(input);
-  delete trigger.repeats;
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'yearly',
       ...input.trigger,
     }
   );
@@ -212,19 +201,22 @@ it(`verifies immediate trigger handling with channelId`, async () => {
 });
 
 it(`verifies time interval trigger handling`, async () => {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.TIME_INTERVAL,
+    seconds: 3600,
+  };
   const input = {
     ...notificationTriggerInputTest,
-    trigger: {
-      seconds: 3600,
-    },
+    trigger,
   };
   await scheduleNotificationAsync(input);
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(
     input.identifier,
     input.content,
     {
-      type: 'timeInterval',
+      channelId: undefined,
       repeats: false,
+      type: 'timeInterval',
       seconds: input.trigger.seconds,
     }
   );
@@ -248,12 +240,14 @@ it(`verifies time interval trigger handling`, async () => {
 });
 
 it(`verifies calendar trigger handling`, async () => {
+  const trigger: NotificationTriggerInput = {
+    type: CalendarTriggerTypes.CALENDAR,
+    hour: 12,
+    minute: 30,
+  };
   const input = {
     ...notificationTriggerInputTest,
-    trigger: {
-      hour: 12,
-      minute: 30,
-    },
+    trigger,
   };
   await scheduleNotificationAsync(input);
   expect(NotificationScheduler.scheduleNotificationAsync).toHaveBeenLastCalledWith(

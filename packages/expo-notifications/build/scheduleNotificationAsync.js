@@ -1,5 +1,6 @@
 import { Platform, UnavailabilityError, uuid } from 'expo-modules-core';
 import NotificationScheduler from './NotificationScheduler';
+import { CalendarTriggerTypes, } from './Notifications.types';
 /**
  * Schedules a notification to be triggered in the future.
  * > **Note:** Please note that this does not mean that the notification will be presented when it is triggered.
@@ -140,12 +141,13 @@ export function parseTrigger(userFacingTrigger) {
 }
 function isCalendarTrigger(trigger) {
     const { channelId, ...triggerWithoutChannelId } = trigger;
-    return Object.keys(triggerWithoutChannelId).length > 0;
+    return ('type' in triggerWithoutChannelId &&
+        triggerWithoutChannelId.type === CalendarTriggerTypes.CALENDAR);
 }
 function isDateTrigger(trigger) {
     return (trigger instanceof Date ||
         typeof trigger === 'number' ||
-        (typeof trigger === 'object' && 'date' in trigger));
+        (typeof trigger === 'object' && trigger !== null && CalendarTriggerTypes.DATE in trigger));
 }
 function parseDateTrigger(trigger) {
     if (trigger instanceof Date || typeof trigger === 'number') {
@@ -166,8 +168,8 @@ function isDailyTriggerInput(trigger) {
     return (Object.keys(triggerWithoutChannelId).length ===
         DAILY_TRIGGER_EXPECTED_DATE_COMPONENTS.length + 1 &&
         DAILY_TRIGGER_EXPECTED_DATE_COMPONENTS.every((component) => component in triggerWithoutChannelId) &&
-        'repeats' in triggerWithoutChannelId &&
-        triggerWithoutChannelId.repeats === true);
+        'type' in triggerWithoutChannelId &&
+        triggerWithoutChannelId.type === CalendarTriggerTypes.DAILY);
 }
 function isWeeklyTriggerInput(trigger) {
     if (typeof trigger !== 'object')
@@ -176,8 +178,8 @@ function isWeeklyTriggerInput(trigger) {
     return (Object.keys(triggerWithoutChannelId).length ===
         WEEKLY_TRIGGER_EXPECTED_DATE_COMPONENTS.length + 1 &&
         WEEKLY_TRIGGER_EXPECTED_DATE_COMPONENTS.every((component) => component in triggerWithoutChannelId) &&
-        'repeats' in triggerWithoutChannelId &&
-        triggerWithoutChannelId.repeats === true);
+        'type' in triggerWithoutChannelId &&
+        triggerWithoutChannelId.type === CalendarTriggerTypes.WEEKLY);
 }
 function isYearlyTriggerInput(trigger) {
     if (typeof trigger !== 'object')
@@ -186,10 +188,13 @@ function isYearlyTriggerInput(trigger) {
     return (Object.keys(triggerWithoutChannelId).length ===
         YEARLY_TRIGGER_EXPECTED_DATE_COMPONENTS.length + 1 &&
         YEARLY_TRIGGER_EXPECTED_DATE_COMPONENTS.every((component) => component in triggerWithoutChannelId) &&
-        'repeats' in triggerWithoutChannelId &&
-        triggerWithoutChannelId.repeats === true);
+        'type' in triggerWithoutChannelId &&
+        triggerWithoutChannelId.type === CalendarTriggerTypes.YEARLY);
 }
 function isSecondsPropertyMisusedInCalendarTriggerInput(trigger) {
+    if (typeof trigger !== 'object' || trigger === null || trigger instanceof Date) {
+        return false;
+    }
     const { channelId, ...triggerWithoutChannelId } = trigger;
     return (
     // eg. { seconds: ..., repeats: ..., hour: ... }
