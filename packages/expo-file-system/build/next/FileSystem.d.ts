@@ -11,7 +11,7 @@ export declare class File extends ExpoFileSystem.FileSystemFile {
     get extension(): string;
 }
 export declare class Directory extends ExpoFileSystem.FileSystemDirectory {
-    constructor(...uris: URI[]);
+    constructor(...uris: (URI | File | Directory)[]);
     get parentDirectory(): Directory;
     list(): (Directory | File)[];
 }
