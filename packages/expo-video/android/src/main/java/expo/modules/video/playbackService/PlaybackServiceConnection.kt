@@ -4,9 +4,11 @@ import android.content.ComponentName
 import android.content.ServiceConnection
 import android.os.IBinder
 import android.util.Log
+import com.facebook.react.common.annotations.UnstableReactNativeAPI
 import expo.modules.video.VideoPlayer
 import java.lang.ref.WeakReference
 
+@UnstableReactNativeAPI
 class PlaybackServiceConnection(val player: WeakReference<VideoPlayer>) : ServiceConnection {
   var playbackServiceBinder: PlaybackServiceBinder? = null
 

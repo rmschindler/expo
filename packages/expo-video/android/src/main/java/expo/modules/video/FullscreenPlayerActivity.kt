@@ -8,7 +8,9 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.widget.ImageButton
 import androidx.media3.ui.PlayerView
+import com.facebook.react.common.annotations.UnstableReactNativeAPI
 
+@UnstableReactNativeAPI
 @androidx.annotation.OptIn(androidx.media3.common.util.UnstableApi::class)
 class FullscreenPlayerActivity : Activity() {
   private lateinit var mContentView: View

@@ -2,9 +2,11 @@ package expo.modules.video
 
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
+import com.facebook.react.common.annotations.UnstableReactNativeAPI
 import expo.modules.kotlin.AppContext
 
 // Helper class used to keep track of all existing VideoViews and VideoPlayers
+@UnstableReactNativeAPI
 @OptIn(UnstableApi::class)
 object VideoManager {
   const val INTENT_PLAYER_KEY = "player_uuid"

@@ -8,7 +8,9 @@ import androidx.media3.session.SessionResult
 import com.google.common.util.concurrent.ListenableFuture
 import androidx.annotation.OptIn
 import androidx.media3.common.util.UnstableApi
+import com.facebook.react.common.annotations.UnstableReactNativeAPI
 
+@UnstableReactNativeAPI
 @OptIn(UnstableApi::class)
 class VideoMediaSessionCallback : MediaSession.Callback {
   override fun onConnect(

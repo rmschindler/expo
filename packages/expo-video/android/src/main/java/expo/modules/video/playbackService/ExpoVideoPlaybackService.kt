@@ -17,13 +17,16 @@ import androidx.media3.session.MediaSession
 import androidx.media3.session.MediaSessionService
 import androidx.media3.session.MediaStyleNotificationHelper
 import androidx.media3.session.SessionCommand
+import com.facebook.react.common.annotations.UnstableReactNativeAPI
 import com.google.common.collect.ImmutableList
 import expo.modules.kotlin.AppContext
 import expo.modules.video.R
 import expo.modules.video.VideoPlayer
 
+@UnstableReactNativeAPI
 class PlaybackServiceBinder(val service: ExpoVideoPlaybackService) : Binder()
 
+@UnstableReactNativeAPI
 @OptIn(UnstableApi::class)
 class ExpoVideoPlaybackService : MediaSessionService() {
   private val mediaSessions = mutableMapOf<ExoPlayer, MediaSession>()

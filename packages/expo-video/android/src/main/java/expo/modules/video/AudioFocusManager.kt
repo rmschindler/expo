@@ -6,11 +6,13 @@ import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
 import androidx.media3.common.util.UnstableApi
+import com.facebook.react.common.annotations.UnstableReactNativeAPI
 import expo.modules.kotlin.AppContext
 import expo.modules.video.records.VolumeEvent
 import kotlinx.coroutines.launch
 import java.lang.ref.WeakReference
 
+@UnstableReactNativeAPI
 @UnstableApi
 class AudioFocusManager(private val appContext: AppContext) : AudioManager.OnAudioFocusChangeListener, VideoPlayerListener {
   private val audioManager by lazy {
