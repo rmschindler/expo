@@ -55,6 +55,7 @@
     "@expo/rudder-sdk-node": "^1.1.1",
     "@expo/spawn-async": "^1.7.2",
     "@expo/xcpretty": "^4.3.0",
+    "@react-native-community/cli-server-api": "15.0.0-alpha.2",
     "@react-native/dev-middleware": "0.76.0-rc.1",
     "@urql/core": "^2.3.6",
     "@urql/exchange-retry": "0.3.0",
