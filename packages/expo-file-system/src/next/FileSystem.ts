@@ -1,6 +1,6 @@
 import ExpoFileSystem from './ExpoFileSystem';
 import { URI } from './FileSystem.types';
-import { dirname, extname, join } from './pathUtilities/path';
+import { dirname, extname, join, basename } from './pathUtilities/path';
 
 export class File extends ExpoFileSystem.FileSystemFile {
   constructor(uri: URI) {
@@ -18,6 +18,12 @@ export class File extends ExpoFileSystem.FileSystemFile {
    */
   get extension() {
     return extname(this.uri);
+  }
+  /**
+   * File name. Includes the extension.
+   */
+  get name() {
+    return basename(this.uri);
   }
 }
 
@@ -44,5 +50,12 @@ export class Directory extends ExpoFileSystem.FileSystemDirectory {
     return super
       .listAsRecords()
       .map(({ isDirectory, path }) => (isDirectory ? new Directory(path) : new File(path)));
+  }
+
+  /**
+   * Directory name.
+   */
+  get name() {
+    return basename(this.uri);
   }
 }
