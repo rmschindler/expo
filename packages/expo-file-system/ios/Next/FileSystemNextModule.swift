@@ -40,7 +40,7 @@ public final class FileSystemNextModule: Module {
       downloadTask.resume()
     }
 
-    AsyncFunction("getAppleSharedContainersAsync") {
+    AsyncFunction("getAppleSharedContainersAsync") { () -> [String: String] in
       guard let appContext else {
         throw Exceptions.AppContextLost()
       }
