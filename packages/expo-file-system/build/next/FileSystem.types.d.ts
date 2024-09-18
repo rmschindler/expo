@@ -43,7 +43,7 @@ export declare class Directory {
      */
     copy(destination: Directory | File): any;
     /**
-     * Moves a directory.
+     * Moves a directory. The Directory instance now points to the new location.
      */
     move(destination: Directory | File): any;
     /**
@@ -112,7 +112,7 @@ export declare class File {
      */
     copy(destination: Directory | File): any;
     /**
-     * Moves a directory.
+     * Moves a directory. The File instance now points to the new location.
      */
     move(destination: Directory | File): any;
     /**
